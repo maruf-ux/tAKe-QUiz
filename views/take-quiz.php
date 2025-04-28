@@ -8,7 +8,6 @@ if (!isset($_SESSION['quiz_started']) || !$_SESSION['quiz_started']) {
     $stmt = $pdo->query("SELECT * FROM questions");
     $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    shuffle($questions);
 
     // Store questions in session
     $_SESSION['questions'] = $questions;
@@ -41,12 +40,11 @@ $stmt = $pdo->prepare("SELECT * FROM answers WHERE question_id = ?");
 $stmt->execute([$questionId]);
 $answers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-shuffle($answers);
 
 function calculateAndSaveResults($pdo)
 {
     $totalMarks = 0;
-    $userId = null; 
+    $userId = null;
 
     foreach ($_SESSION['user_answers'] as $questionId => $answerId) {
         if ($answerId) {
@@ -88,7 +86,6 @@ function calculateAndSaveResults($pdo)
 
     <body>
         <div class="container mt-5">
-          
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card shadow">
@@ -106,8 +103,8 @@ function calculateAndSaveResults($pdo)
                                 <form method="POST" id="quiz-form">
                                     <input type="hidden" name="question_id" value="<?php echo $questionId; ?>">
                                     <div class="list-group mb-4">
-                                        <?php if (count($answers) > 0): ?>
-                                            <?php foreach ($answers as $answer): ?>
+                                        <?php if (count($answers) > 0) { ?>
+                                            <?php foreach ($answers as $answer) { ?>
                                                 <div class="list-group-item list-group-item-action answer-item">
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="radio"
@@ -120,11 +117,11 @@ function calculateAndSaveResults($pdo)
                                                         </label>
                                                     </div>
                                                 </div>
-                                            <?php endforeach; ?>
-                                        <?php else: ?>
-                                            <div class="alert alert-warning"> No answers found for this question. Please
-                                                check your database. </div>
-                                        <?php endif; ?>
+                                            <?php } ?>
+                                        <?php } else { ?>
+                                            <div class="alert alert-warning">No answers found for this question. Please
+                                                check your database.</div>
+                                        <?php } ?>
                                     </div>
                                     <div class="d-grid">
                                         <button type="submit" name="submit_answer" class="btn btn-primary btn-lg">Submit
